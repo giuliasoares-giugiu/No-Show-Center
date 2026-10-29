@@ -60,8 +60,9 @@ function errorMessage(error: unknown, fallback: string): string {
 }
 
 export default function App() {
-  const [sessionState, setSessionState] = useState<'checking' | 'signed-out' | 'signed-in' | 'error'>('checking');
-  const [user, setUser] = useState<Me | null>(null);
+  const SKIP_LOGIN = import.meta.env.VITE_SKIP_LOGIN === 'true';
+  const [sessionState, setSessionState] = useState<'checking' | 'signed-out' | 'signed-in' | 'error'>(SKIP_LOGIN ? 'signed-in' : 'checking');
+  const [user, setUser] = useState<Me | null>(import.meta.env.VITE_SKIP_LOGIN === 'true' ? { email: 'demo@local', is_admin: true, stations: [], regionals: [] } : null);
   const [authError, setAuthError] = useState('');
   const [loginBusy, setLoginBusy] = useState(false);
   const [view, setView] = useState<View>(() => currentView());
@@ -112,6 +113,7 @@ export default function App() {
   }), [filters.date_from, filters.date_to, filters.queue, filters.regional, filters.stations]);
 
   const checkSession = useCallback(async () => {
+    if (import.meta.env.VITE_SKIP_LOGIN === 'true') { setLookupsLoading(false); return; }
     setSessionState('checking');
     setAuthError('');
     try {
