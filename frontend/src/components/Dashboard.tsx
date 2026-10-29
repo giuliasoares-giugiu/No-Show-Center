@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { todayISO } from "../format";
 import { api } from "../services/api";
 import type {
-  FilterOption, Me, Occurrence, OccurrenceFilters, Page, Queue, Summary, Treatment,
+  FilterOption, Me, Occurrence, OccurrenceFilters, Page, Queue, Kpis, Treatment,
 } from "../types";
 import ContactModal from "./ContactModal";
 import Filters from "./Filters";
@@ -17,11 +17,11 @@ export default function Dashboard({ me, onLogout }: { me: Me; onLogout: () => vo
   const [options, setOptions] = useState<FilterOption[]>([]);
   const [filters, setFilters] = useState<OccurrenceFilters>({
     queue: "", regional: "", stations: [], treated: "", search: "",
-    date_from: todayISO(-7), date_to: todayISO(), page: 1,
+    date_from: todayISO(-7), date_to: todayISO(), page: 1, ordering: "-date",
   });
   const [searchInput, setSearchInput] = useState("");
   const [data, setData] = useState<Page<Occurrence> | null>(null);
-  const [summary, setSummary] = useState<Summary | null>(null);
+  const [summary, setSummary] = useState<Kpis | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [contactTarget, setContactTarget] = useState<Occurrence | null>(null);

@@ -1,4 +1,5 @@
-import { statusLabel, timeLabel } from "../format";
+import { STATE_LABEL, stateOf, timeLabel } from "../format";
+import { api } from "../services/api";
 import type { Occurrence, Queue, Treatment } from "../types";
 import TreatmentForm from "./TreatmentForm";
 
@@ -31,7 +32,7 @@ export default function OccurrenceRow({ occurrence: o, queue, onContact, onSaved
         <div className="mono">{o.driver_phone}</div>
       </td>
       <td>
-        <div className="status">{statusLabel(o)}</div>
+        <div className="status">{STATE_LABEL[stateOf(o)]}</div>
         <div className="info info-warn">Pacotes pendentes: {o.onhold_order_count}</div>
         <div className="info">Horário registrado: {timeLabel(o.occurred_at)}</div>
       </td>
@@ -42,8 +43,16 @@ export default function OccurrenceRow({ occurrence: o, queue, onContact, onSaved
         </button>
       </td>
       <td>
-        <TreatmentForm key={o.treatment?.updated_at ?? "new"} occurrence={o} queue={queue}
-          onSaved={(t) => onSaved(o.id, t)} />
+        <TreatmentForm
+          key={o.treatment?.updated_at ?? "new"}
+          reversals={queue.reversal_options}
+          justifications={queue.justification_options}
+          canTreat={o.can_treat}
+          onSave={async (payload) => {
+            const t = await api.saveTreatment(o.id, payload);
+            onSaved(o.id, t);
+          }}
+        />
       </td>
     </tr>
   );

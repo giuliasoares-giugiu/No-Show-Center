@@ -1,6 +1,6 @@
-import type { Summary } from "../types";
+import type { Kpis } from "../types";
 
-export default function KpiCards({ summary }: { summary: Summary | null }) {
+export default function KpiCards({ summary }: { summary: Kpis | null }) {
   const v = (n?: number) => (summary ? n : "—");
   return (
     <div className="kpis">
