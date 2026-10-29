@@ -26,6 +26,8 @@ import type {
   TreatmentSummary,
 } from '../types';
 
+import { mockApi } from './mock';
+
 export interface ApiClient {
   me(): Promise<Me>;
   loginGoogle(credential: string): Promise<Me>;
@@ -177,7 +179,7 @@ function withQuery(path: string, params: string): string {
   return params ? `${path}?${params}` : path;
 }
 
-export const api: ApiClient = {
+const realApi: ApiClient = {
   me: () => request<Me>('/me/'),
   loginGoogle: (credential) =>
     request<Me>('/auth/google/', { method: 'POST', body: JSON.stringify({ credential }) }),
@@ -224,3 +226,5 @@ export const api: ApiClient = {
     return request<IndicatorList<DriverRow>>(withQuery('/indicators/drivers/', params.toString()));
   },
 };
+
+export const api: ApiClient = import.meta.env.VITE_SKIP_LOGIN === 'true' ? mockApi : realApi;
