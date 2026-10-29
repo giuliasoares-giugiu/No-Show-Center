@@ -1,0 +1,13 @@
+@"
+.env
+.env.*
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+staticfiles/
+frontend_dist/
+node_modules/
+saida.txt
+.env.bak
+"@ | Out-File .gitignore -Encoding utf8
